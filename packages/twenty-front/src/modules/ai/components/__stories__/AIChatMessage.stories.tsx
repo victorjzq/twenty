@@ -11,21 +11,14 @@ import { ComponentDecorator } from 'twenty-ui/testing';
 import { AIChatMessage } from '@/ai/components/AIChatMessage';
 
 import { AgentChatComponentInstanceContext } from '@/ai/states/AgentChatComponentInstanceContext';
+import { agentChatDisplayedThreadState } from '@/ai/states/agentChatDisplayedThreadState';
 import { agentChatMessageComponentFamilyState } from '@/ai/states/agentChatMessageComponentFamilyState';
 import { agentChatMessagesComponentFamilyState } from '@/ai/states/agentChatMessagesComponentFamilyState';
 import { currentAIChatThreadState } from '@/ai/states/currentAIChatThreadState';
-import { styled } from '@linaria/react';
+
 import { useStore } from 'jotai';
 import { RootDecorator } from '~/testing/decorators/RootDecorator';
 import { SnackBarDecorator } from '~/testing/decorators/SnackBarDecorator';
-
-const StyledConversationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 700px;
-  padding: 24px;
-`;
 
 const INSTANCE_ID = 'agentChatStoryInstance';
 
@@ -258,6 +251,8 @@ const AgentChatMessagesSetterEffect = ({
   useEffect(() => {
     const currentThreadId = store.get(currentAIChatThreadState.atom);
 
+    store.set(agentChatDisplayedThreadState.atom, currentThreadId);
+
     store.set(
       agentChatMessagesComponentFamilyState.atomFamily({
         instanceId: INSTANCE_ID,
@@ -309,10 +304,18 @@ type Story = StoryObj<typeof AIChatMessage>;
 // Conversation showcase - demonstrates a full AI chat flow
 export const ConversationWithCodeExecution: Story = {
   render: () => (
-    <StyledConversationContainer>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
+        maxWidth: 700,
+        padding: 24,
+      }}
+    >
       <AIChatMessage messageId={mockUserMessage.id} />
       <AIChatMessage messageId={mockAssistantWithCodeExecution.id} />
-    </StyledConversationContainer>
+    </div>
   ),
 };
 
