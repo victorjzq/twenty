@@ -37,6 +37,11 @@ export const useQueryWithCallbacks = <
     notifyOnNetworkStatusChange: true,
   } as useQuery.Options<TData, TVariables>);
 
+  const variablesString = JSON.stringify(queryOptions.variables);
+
+  const [lastProcessedVariablesString, setLastProcessedVariablesString] =
+    useState<string | null>(null);
+
   const [hasProcessedCurrentFetchCycle, setHasProcessedCurrentFetchCycle] =
     useState(false);
 
@@ -52,11 +57,14 @@ export const useQueryWithCallbacks = <
       return;
     }
 
-    if (hasProcessedCurrentFetchCycle) {
+    const variablesChanged = variablesString !== lastProcessedVariablesString;
+
+    if (hasProcessedCurrentFetchCycle && !variablesChanged) {
       return;
     }
 
     setHasProcessedCurrentFetchCycle(true);
+    setLastProcessedVariablesString(variablesString);
 
     const isFirstLoad = !hasEverLoaded;
 
@@ -74,6 +82,8 @@ export const useQueryWithCallbacks = <
   }, [
     networkStatus,
     data,
+    variablesString,
+    lastProcessedVariablesString,
     hasProcessedCurrentFetchCycle,
     hasEverLoaded,
     onFirstLoad,
