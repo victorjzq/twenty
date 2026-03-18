@@ -16,9 +16,18 @@ import { agentChatMessageComponentFamilyState } from '@/ai/states/agentChatMessa
 import { agentChatMessagesComponentFamilyState } from '@/ai/states/agentChatMessagesComponentFamilyState';
 import { currentAIChatThreadState } from '@/ai/states/currentAIChatThreadState';
 
+import { styled } from '@linaria/react';
 import { useStore } from 'jotai';
 import { RootDecorator } from '~/testing/decorators/RootDecorator';
 import { SnackBarDecorator } from '~/testing/decorators/SnackBarDecorator';
+
+const StyledConversationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 700px;
+  padding: 24px;
+`;
 
 const INSTANCE_ID = 'agentChatStoryInstance';
 
@@ -304,18 +313,10 @@ type Story = StoryObj<typeof AIChatMessage>;
 // Conversation showcase - demonstrates a full AI chat flow
 export const ConversationWithCodeExecution: Story = {
   render: () => (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 24,
-        maxWidth: 700,
-        padding: 24,
-      }}
-    >
+    <StyledConversationContainer>
       <AIChatMessage messageId={mockUserMessage.id} />
       <AIChatMessage messageId={mockAssistantWithCodeExecution.id} />
-    </div>
+    </StyledConversationContainer>
   ),
 };
 
