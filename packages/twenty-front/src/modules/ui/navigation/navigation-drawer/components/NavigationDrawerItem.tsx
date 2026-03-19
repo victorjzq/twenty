@@ -206,6 +206,15 @@ const StyledNavigationDrawerItemContainer = styled.div`
   width: 100%;
 `;
 
+const StyledItemLinkPart = styled(Link)`
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex: 1 1 auto;
+  color: inherit;
+  text-decoration: none;
+`;
+
 const StyledSpacer = styled.span`
   flex-grow: 1;
 `;
@@ -332,138 +341,165 @@ export const NavigationDrawerItem = ({
     triggerEvent,
   });
 
-  return (
-    <StyledNavigationDrawerItemContainer>
-      <StyledItem
-        id={navigationItemId}
-        className={`navigation-drawer-item ${className || ''}`}
-        onClick={
-          mouseUpNavigation ? onClick : handleMouseDownNavigationClickClick
-        }
-        onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
-        active={active}
-        aria-selected={active}
-        danger={danger}
-        soon={soon}
-        variant={variant}
-        as={
-          to
-            ? isExternalLink
-              ? 'a'
-              : Link
-            : isDefined(rightOptions)
-              ? 'div'
-              : undefined
-        }
-        role={to ? undefined : isDefined(rightOptions) ? 'button' : undefined}
-        to={isExternalLink ? undefined : to}
-        href={isExternalLink ? to : undefined}
-        target={isExternalLink ? '_blank' : undefined}
-        rel={isExternalLink ? 'noopener noreferrer' : undefined}
-        draggable={to && !isExternalLink ? false : undefined}
-        indentationLevel={indentationLevel}
-        isNavigationDrawerExpanded={isNavigationDrawerExpanded}
-        isDragging={isDragging}
-        hasRightOptions={isDefined(rightOptions)}
-        isSelectedInEditMode={isSelectedInEditMode}
-      >
-        <StyledItemElementsContainer>
-          {showBreadcrumb && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <NavigationDrawerItemBreadcrumb state={subItemState} />
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
+  const hasLinkWithRightOptions =
+    isDefined(to) && !isExternalLink && isDefined(rightOptions);
 
-          {Icon &&
-            (isNonEmptyString(iconColor) ? (
-              <StyledIcon>
-                <NavigationMenuItemStyleIcon Icon={Icon} color={iconColor} />
-              </StyledIcon>
-            ) : (
-              <StyledIcon>
-                <Icon
-                  style={{
-                    minWidth: theme.icon.size.md,
-                  }}
-                  size={theme.icon.size.md}
-                  stroke={theme.icon.stroke.md}
-                  color={
-                    showBreadcrumb &&
-                    !isSettingsPage &&
-                    !isNavigationDrawerExpanded
-                      ? theme.font.color.light
-                      : 'currentColor'
-                  }
-                />
-              </StyledIcon>
-            ))}
+  const rightOptionsVisibility =
+    isMobile || isRightOptionsDropdownOpen || alwaysShowRightOptions
+      ? 'true'
+      : undefined;
 
-          <StyledLabelParent>
-            <OverflowingTextWithTooltip
-              text={
-                <>
-                  <StyledItemLabel>{label}</StyledItemLabel>
-                  {secondaryLabel && (
-                    <StyledItemSecondaryLabel>
-                      {' · '}
-                      {secondaryLabel}
-                    </StyledItemSecondaryLabel>
-                  )}
-                </>
-              }
-              tooltipContent={
-                secondaryLabel ? `${label} · ${secondaryLabel}` : label
+  const rightOptionsBlock = isDefined(rightOptions) && (
+    <NavigationDrawerAnimatedCollapseWrapper>
+      <StyledRightOptionsContainer>
+        <StyledRightOptionsVisbility data-visible={rightOptionsVisibility}>
+          {rightOptions}
+        </StyledRightOptionsVisbility>
+      </StyledRightOptionsContainer>
+    </NavigationDrawerAnimatedCollapseWrapper>
+  );
+
+  const innerContent = (
+    <>
+      {showBreadcrumb && (
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <NavigationDrawerItemBreadcrumb state={subItemState} />
+        </NavigationDrawerAnimatedCollapseWrapper>
+      )}
+
+      {Icon &&
+        (isNonEmptyString(iconColor) ? (
+          <StyledIcon>
+            <NavigationMenuItemStyleIcon Icon={Icon} color={iconColor} />
+          </StyledIcon>
+        ) : (
+          <StyledIcon>
+            <Icon
+              style={{
+                minWidth: theme.icon.size.md,
+              }}
+              size={theme.icon.size.md}
+              stroke={theme.icon.stroke.md}
+              color={
+                showBreadcrumb && !isSettingsPage && !isNavigationDrawerExpanded
+                  ? theme.font.color.light
+                  : 'currentColor'
               }
             />
-          </StyledLabelParent>
+          </StyledIcon>
+        ))}
 
-          {showStyledSpacer && <StyledSpacer />}
+      <StyledLabelParent>
+        <OverflowingTextWithTooltip
+          text={
+            <>
+              <StyledItemLabel>{label}</StyledItemLabel>
+              {secondaryLabel && (
+                <StyledItemSecondaryLabel>
+                  {' · '}
+                  {secondaryLabel}
+                </StyledItemSecondaryLabel>
+              )}
+            </>
+          }
+          tooltipContent={
+            secondaryLabel ? `${label} · ${secondaryLabel}` : label
+          }
+        />
+      </StyledLabelParent>
 
-          {soon && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <Pill label={t`Soon`} />
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
+      {showStyledSpacer && <StyledSpacer />}
 
-          {isNew && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <Pill label={t`New`} />
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
+      {soon && (
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <Pill label={t`Soon`} />
+        </NavigationDrawerAnimatedCollapseWrapper>
+      )}
 
-          {!!count && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <StyledItemCount>{count}</StyledItemCount>
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
+      {isNew && (
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <Pill label={t`New`} />
+        </NavigationDrawerAnimatedCollapseWrapper>
+      )}
 
-          {keyboard && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <StyledKeyBoardShortcut className="keyboard-shortcuts">
-                <Label>{keyboard}</Label>
-              </StyledKeyBoardShortcut>
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
+      {!!count && (
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <StyledItemCount>{count}</StyledItemCount>
+        </NavigationDrawerAnimatedCollapseWrapper>
+      )}
 
-          {isDefined(rightOptions) && (
-            <NavigationDrawerAnimatedCollapseWrapper>
-              <StyledRightOptionsContainer>
-                <StyledRightOptionsVisbility
-                  data-visible={
-                    isMobile ||
-                    isRightOptionsDropdownOpen ||
-                    alwaysShowRightOptions
-                      ? 'true'
-                      : undefined
-                  }
-                >
-                  {rightOptions}
-                </StyledRightOptionsVisbility>
-              </StyledRightOptionsContainer>
-            </NavigationDrawerAnimatedCollapseWrapper>
-          )}
-        </StyledItemElementsContainer>
-      </StyledItem>
+      {keyboard && (
+        <NavigationDrawerAnimatedCollapseWrapper>
+          <StyledKeyBoardShortcut className="keyboard-shortcuts">
+            <Label>{keyboard}</Label>
+          </StyledKeyBoardShortcut>
+        </NavigationDrawerAnimatedCollapseWrapper>
+      )}
+    </>
+  );
+
+  const sharedItemProps = {
+    id: navigationItemId,
+    className: `navigation-drawer-item ${className || ''}`,
+    active,
+    'aria-selected': active,
+    danger,
+    soon,
+    variant,
+    indentationLevel,
+    isNavigationDrawerExpanded,
+    isDragging,
+    hasRightOptions: isDefined(rightOptions),
+    isSelectedInEditMode,
+  };
+
+  return (
+    <StyledNavigationDrawerItemContainer>
+      {hasLinkWithRightOptions ? (
+        <StyledItem {...sharedItemProps} as="div">
+          <StyledItemLinkPart
+            to={to}
+            onClick={
+              mouseUpNavigation ? onClick : handleMouseDownNavigationClickClick
+            }
+            onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
+            draggable={false}
+          >
+            <StyledItemElementsContainer>
+              {innerContent}
+            </StyledItemElementsContainer>
+          </StyledItemLinkPart>
+          {rightOptionsBlock}
+        </StyledItem>
+      ) : (
+        <StyledItem
+          {...sharedItemProps}
+          as={
+            to
+              ? isExternalLink
+                ? 'a'
+                : Link
+              : isDefined(rightOptions)
+                ? 'div'
+                : undefined
+          }
+          role={to ? undefined : isDefined(rightOptions) ? 'button' : undefined}
+          to={isExternalLink ? undefined : to}
+          href={isExternalLink ? to : undefined}
+          target={isExternalLink ? '_blank' : undefined}
+          rel={isExternalLink ? 'noopener noreferrer' : undefined}
+          draggable={to && !isExternalLink ? false : undefined}
+          onClick={
+            mouseUpNavigation ? onClick : handleMouseDownNavigationClickClick
+          }
+          onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
+        >
+          <StyledItemElementsContainer>
+            {innerContent}
+            {rightOptionsBlock}
+          </StyledItemElementsContainer>
+        </StyledItem>
+      )}
 
       {!isNavigationDrawerExpanded && !isMobile && (
         <AppTooltip
