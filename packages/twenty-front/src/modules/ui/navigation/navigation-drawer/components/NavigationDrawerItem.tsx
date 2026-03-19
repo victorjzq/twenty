@@ -344,15 +344,16 @@ export const NavigationDrawerItem = ({
   const hasLinkWithRightOptions =
     isDefined(to) && !isExternalLink && isDefined(rightOptions);
 
-  const rightOptionsVisibility =
-    isMobile || isRightOptionsDropdownOpen || alwaysShowRightOptions
-      ? 'true'
-      : undefined;
-
   const rightOptionsBlock = isDefined(rightOptions) && (
     <NavigationDrawerAnimatedCollapseWrapper>
       <StyledRightOptionsContainer>
-        <StyledRightOptionsVisbility data-visible={rightOptionsVisibility}>
+        <StyledRightOptionsVisbility
+          data-visible={
+            isMobile || isRightOptionsDropdownOpen || alwaysShowRightOptions
+              ? 'true'
+              : undefined
+          }
+        >
           {rightOptions}
         </StyledRightOptionsVisbility>
       </StyledRightOptionsContainer>
