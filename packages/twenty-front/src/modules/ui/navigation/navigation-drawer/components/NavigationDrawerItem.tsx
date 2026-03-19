@@ -207,11 +207,11 @@ const StyledNavigationDrawerItemContainer = styled.div`
 `;
 
 const StyledItemLinkPart = styled(Link)`
-  display: flex;
-  min-width: 0;
   align-items: center;
-  flex: 1 1 auto;
   color: inherit;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
   text-decoration: none;
 `;
 
@@ -438,32 +438,31 @@ export const NavigationDrawerItem = ({
     </>
   );
 
-  const sharedItemProps = {
-    id: navigationItemId,
-    className: `navigation-drawer-item ${className || ''}`,
-    active,
-    'aria-selected': active,
-    danger,
-    soon,
-    variant,
-    indentationLevel,
-    isNavigationDrawerExpanded,
-    isDragging,
-    hasRightOptions: isDefined(rightOptions),
-    isSelectedInEditMode,
-  };
-
   return (
     <StyledNavigationDrawerItemContainer>
       {hasLinkWithRightOptions ? (
-        <StyledItem {...sharedItemProps} as="div">
+        <StyledItem
+          active={active}
+          aria-selected={active}
+          as="div"
+          className={`navigation-drawer-item ${className || ''}`}
+          danger={danger}
+          hasRightOptions={isDefined(rightOptions)}
+          id={navigationItemId}
+          indentationLevel={indentationLevel}
+          isDragging={isDragging}
+          isNavigationDrawerExpanded={isNavigationDrawerExpanded}
+          isSelectedInEditMode={isSelectedInEditMode}
+          soon={soon}
+          variant={variant}
+        >
           <StyledItemLinkPart
-            to={to}
+            draggable={false}
+            onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
             onClick={
               mouseUpNavigation ? onClick : handleMouseDownNavigationClickClick
             }
-            onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
-            draggable={false}
+            to={to}
           >
             <StyledItemElementsContainer>
               {innerContent}
@@ -473,7 +472,8 @@ export const NavigationDrawerItem = ({
         </StyledItem>
       ) : (
         <StyledItem
-          {...sharedItemProps}
+          active={active}
+          aria-selected={active}
           as={
             to
               ? isExternalLink
@@ -483,16 +483,26 @@ export const NavigationDrawerItem = ({
                 ? 'div'
                 : undefined
           }
-          role={to ? undefined : isDefined(rightOptions) ? 'button' : undefined}
-          to={isExternalLink ? undefined : to}
-          href={isExternalLink ? to : undefined}
-          target={isExternalLink ? '_blank' : undefined}
-          rel={isExternalLink ? 'noopener noreferrer' : undefined}
+          className={`navigation-drawer-item ${className || ''}`}
+          danger={danger}
           draggable={to && !isExternalLink ? false : undefined}
+          hasRightOptions={isDefined(rightOptions)}
+          href={isExternalLink ? to : undefined}
+          id={navigationItemId}
+          indentationLevel={indentationLevel}
+          isDragging={isDragging}
+          isNavigationDrawerExpanded={isNavigationDrawerExpanded}
+          isSelectedInEditMode={isSelectedInEditMode}
+          onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
           onClick={
             mouseUpNavigation ? onClick : handleMouseDownNavigationClickClick
           }
-          onMouseDown={mouseUpNavigation ? undefined : handleMouseDown}
+          rel={isExternalLink ? 'noopener noreferrer' : undefined}
+          role={to ? undefined : isDefined(rightOptions) ? 'button' : undefined}
+          soon={soon}
+          target={isExternalLink ? '_blank' : undefined}
+          to={isExternalLink ? undefined : to}
+          variant={variant}
         >
           <StyledItemElementsContainer>
             {innerContent}
